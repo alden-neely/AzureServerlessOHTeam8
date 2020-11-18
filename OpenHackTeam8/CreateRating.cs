@@ -19,7 +19,7 @@ namespace OpenHackTeam8
                 databaseName: "Starfruit",
                 collectionName: "Ratings",
                 ConnectionStringSetting = "CosmosDBConnectionString")]
-                IAsyncCollector<RatingDto> ratingOut,
+            IAsyncCollector<RatingDto> ratingOut,
             ILogger log)
         {
 
@@ -34,7 +34,7 @@ namespace OpenHackTeam8
             }
 
             // add ID guid
-            rating.Id = Guid.NewGuid();
+            rating.id = Guid.NewGuid();
 
             // add timestamp
             rating.Timestamp = DateTime.UtcNow;
