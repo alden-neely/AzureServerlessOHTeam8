@@ -7,8 +7,6 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using System.Net.Http;
-using System.Net;
 
 namespace OpenHackTeam8
 {
@@ -28,26 +26,11 @@ namespace OpenHackTeam8
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             RatingDto rating = JsonConvert.DeserializeObject<RatingDto>(requestBody);
 
-            // Validate userId and productId
-            var httpClient = new HttpClient();
-            var userIdResponse = await httpClient.GetAsync("https://serverlessohuser.trafficmanager.net/api/GetUser?userId=" + rating.UserId);
-
-            if (userIdResponse.StatusCode == HttpStatusCode.BadRequest) 
+            // Validate userId, productId, and rating
+            var validationErrors = await Validation.GetErrors(rating);
+            if (validationErrors.Count > 0)
             {
-                return new BadRequestObjectResult($"userid: {rating.UserId} is not valid");
-            }
-
-            var productIdResponse = await httpClient.GetAsync("https://serverlessohproduct.trafficmanager.net/api/GetProduct?productId=" + rating.ProductId);
-
-            if (productIdResponse.StatusCode == HttpStatusCode.BadRequest)
-            {
-                return new BadRequestObjectResult($"productid: {rating.ProductId} is not valid");
-            }
-
-            // validate rating
-            if (IsRatingRangeNotValid(rating.Rating))
-            {
-                return new BadRequestObjectResult("rating must be a number between 0 and 5");
+                return new BadRequestObjectResult(validationErrors);
             }
 
             // add ID guid
@@ -60,10 +43,5 @@ namespace OpenHackTeam8
 
             return new OkObjectResult(rating);
         }
-
-        public static bool IsRatingRangeNotValid(int rating) =>
-            rating < 0 && rating > 5;
-        
-
     }
 }
