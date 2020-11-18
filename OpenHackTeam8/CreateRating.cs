@@ -22,9 +22,8 @@ namespace OpenHackTeam8
             IAsyncCollector<RatingDto> ratingOut,
             ILogger log)
         {
-
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            RatingDto rating = JsonConvert.DeserializeObject<RatingDto>(requestBody);
+            var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            var rating = JsonConvert.DeserializeObject<RatingDto>(requestBody) ?? new RatingDto();
 
             // Validate userId, productId, and rating
             var validationErrors = await Validation.GetErrors(rating);
