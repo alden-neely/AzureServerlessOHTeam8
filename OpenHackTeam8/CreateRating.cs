@@ -7,6 +7,7 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System.Net.Http;
 
 namespace OpenHackTeam8
 {
@@ -29,7 +30,7 @@ namespace OpenHackTeam8
             // Validate userId and productId
 
             // validate rating
-            if (!(rating.Rating >= 0 && rating.Rating <= 5))
+            if (IsRatingRangeNotValid(rating.Rating))
             {
                 return new BadRequestObjectResult("rating must be a number between 0 and 5");
             }
@@ -44,5 +45,9 @@ namespace OpenHackTeam8
 
             return new OkObjectResult(rating);
         }
+
+        public static bool IsRatingRangeNotValid(int rating) =>
+            rating < 0 && rating > 5;
+        
     }
 }
