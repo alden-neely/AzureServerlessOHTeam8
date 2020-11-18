@@ -26,12 +26,11 @@ namespace OpenHackTeam8
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             RatingDto rating = JsonConvert.DeserializeObject<RatingDto>(requestBody);
 
-            // Validate userId and productId
-
-            // validate rating
-            if (!(rating.Rating >= 0 && rating.Rating <= 5))
+            // Validate userId, productId, and rating
+            var validationErrors = await Validation.GetErrors(rating);
+            if (validationErrors.Count > 0)
             {
-                return new BadRequestObjectResult("rating must be a number between 0 and 5");
+                return new BadRequestObjectResult(validationErrors);
             }
 
             // add ID guid
