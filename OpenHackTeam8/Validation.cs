@@ -7,12 +7,10 @@ using System.Threading.Tasks;
 
 namespace OpenHackTeam8
 {
-
     public static class Validation
     {
-        public static string userIdValidationUrl = "https://serverlessohuser.trafficmanager.net/api/GetUser?userId=";
-        public static string productIdValidationUrl = "https://serverlessohproduct.trafficmanager.net/api/GetProduct?productId=";
-
+        public static string UserIdValidationUrl = "https://serverlessohuser.trafficmanager.net/api/GetUser?userId=";
+        public static string ProductIdValidationUrl = "https://serverlessohproduct.trafficmanager.net/api/GetProduct?productId=";
 
         public static async Task<List<ValidationError>> GetErrors(RatingDto rating)
         {
@@ -42,10 +40,10 @@ namespace OpenHackTeam8
             !(rating >= 0 && rating <= 5);
 
         public static async Task<bool> IsProductIdNotValid(Guid productId, HttpClient httpClient) =>
-            await IsBadRequest("https://serverlessohproduct.trafficmanager.net/api/GetProduct?productId=" + productId, httpClient);
+            await IsBadRequest(ProductIdValidationUrl + productId, httpClient);
             
         public static async Task<bool> IsUserIdNotValid(Guid userId, HttpClient httpClient) =>
-            await IsBadRequest("https://serverlessohuser.trafficmanager.net/api/GetUser?userId=" + userId, httpClient);
+            await IsBadRequest(UserIdValidationUrl + userId, httpClient);
         
         public static async Task<bool> IsBadRequest(string url, HttpClient httpClient)
         {
